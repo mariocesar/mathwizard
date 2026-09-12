@@ -108,11 +108,13 @@ function makeItem(doc: TablesDoc, factId: FactId, rng: Rng, isWinddown: boolean)
   const state = doc.facts[factId]!;
   if (!isWinddown && state.phase === 'strategy') {
     const strategy = buildStrategy(doc, factId);
+    // La tarjeta muestra el hecho en la MISMA orientación que la derivación
+    // («9 × 7» arriba si abajo se habla de 9 × 7) — nada de saltos de tema.
     return {
       kind: 'strategy',
       factId,
-      a,
-      b,
+      a: strategy.display.a,
+      b: strategy.display.b,
       strategyId: strategy.strategyId,
       steps: strategy.steps,
       closing: strategy.closing,
@@ -514,8 +516,8 @@ function onStalled(state: ComposerState): StepResult {
   const converted: SessionItem = {
     kind: 'strategy',
     factId: item.factId,
-    a: item.a,
-    b: item.b,
+    a: strategy.display.a,
+    b: strategy.display.b,
     strategyId: strategy.strategyId,
     steps: strategy.steps,
     closing: strategy.closing,

@@ -22,6 +22,17 @@ describe('buildStrategy', () => {
     }
   });
 
+  it('el primer paso SIEMPRE nombra el hecho original en la orientación mostrada', () => {
+    // Regla anti-confusión: nunca «7 × 9» arriba y «¿cuánto es 10 × 7?» a
+    // secas abajo — el paso 1 explica el rodeo nombrando el hecho.
+    for (const fact of FACTS) {
+      const built = buildStrategy(doc, fact.id);
+      expect(built.steps[0]!.prompt).toContain(`${built.display.a} × ${built.display.b}`);
+      // La orientación mostrada es una permutación del hecho canónico:
+      expect([built.display.a, built.display.b].sort((x, y) => x - y)).toEqual([fact.a, fact.b]);
+    }
+  });
+
   it('prefiere anclas ya sólidas: 7×8 usa 5×+2× (sembradas), no doble de 4×8 (caja 1)', () => {
     expect(buildStrategy(doc, '7x8').strategyId).toBe('cincoMasDos');
   });

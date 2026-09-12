@@ -4,6 +4,12 @@ import type { FactId, FactState, StrategyId, StrategyStep, TablesDoc } from './t
 /**
  * Las 6 derivaciones del temario de 3.º, como datos. Exactamente 1–2 pasos,
  * en español, con los números concretos calculados al construir.
+ *
+ * Regla de claridad (salió de probarlo con un niño): el PRIMER paso siempre
+ * nombra el hecho original y el porqué del rodeo — «9 × 7 es 10 × 7 menos
+ * un 7» — nunca una pregunta suelta que parezca cambiar de tema. Y la
+ * tarjeta del hecho se muestra en la MISMA orientación que usa la
+ * derivación (`display`), para que arriba y abajo hablen del mismo número.
  */
 interface StrategyTemplate {
   id: StrategyId;
@@ -23,8 +29,11 @@ const TEMPLATES: StrategyTemplate[] = [
     anchors: (n) => [canonicalId(10, n)],
     build: (n) => ({
       steps: [
-        { prompt: `¿Cuánto es 10 × ${n}?`, expected: 10 * n },
-        { prompt: `9 × ${n} es un grupo menos: ¿${10 * n} menos ${n}?`, expected: 9 * n },
+        {
+          prompt: `9 × ${n} es 10 × ${n} menos un ${n}. Primero: ¿cuánto es 10 × ${n}?`,
+          expected: 10 * n,
+        },
+        { prompt: `Y ahora un ${n} menos: ¿${10 * n} − ${n}?`, expected: 9 * n },
       ],
       closing: closingFor(9, n),
     }),
@@ -47,8 +56,11 @@ const TEMPLATES: StrategyTemplate[] = [
     anchors: (n) => [canonicalId(2, n)],
     build: (n) => ({
       steps: [
-        { prompt: `¿Cuánto es 2 × ${n}?`, expected: 2 * n },
-        { prompt: `3 × ${n} es ${n} más: ¿${2 * n} + ${n}?`, expected: 3 * n },
+        {
+          prompt: `3 × ${n} es 2 × ${n} y un ${n} más. Primero: ¿cuánto es 2 × ${n}?`,
+          expected: 2 * n,
+        },
+        { prompt: `Y un ${n} más: ¿${2 * n} + ${n}?`, expected: 3 * n },
       ],
       closing: closingFor(3, n),
     }),
@@ -59,7 +71,10 @@ const TEMPLATES: StrategyTemplate[] = [
     anchors: (n) => [canonicalId(5, n), canonicalId(2, n)],
     build: (n) => ({
       steps: [
-        { prompt: `¿Cuánto es 5 × ${n}?`, expected: 5 * n },
+        {
+          prompt: `7 × ${n} se parte en 5 × ${n} y 2 × ${n}. Primero: ¿cuánto es 5 × ${n}?`,
+          expected: 5 * n,
+        },
         { prompt: `Y 2 × ${n} son ${2 * n}. ¿Cuánto es ${5 * n} + ${2 * n}?`, expected: 7 * n },
       ],
       closing: closingFor(7, n),
@@ -111,6 +126,11 @@ export interface BuiltStrategy {
   strategyId: StrategyId;
   steps: StrategyStep[];
   closing: string;
+  /**
+   * Orientación de presentación del hecho, la misma que usan los prompts:
+   * la tarjeta de arriba y la derivación de abajo hablan del mismo número.
+   */
+  display: { a: number; b: number };
 }
 
 /**
@@ -133,6 +153,7 @@ export function buildStrategy(doc: TablesDoc, factId: FactId): BuiltStrategy {
       strategyId: 'despacio',
       steps: [{ prompt: `Vamos despacio: ¿cuánto es ${a} × ${b}?`, expected: a * b }],
       closing: closingFor(a, b),
+      display: { a, b },
     };
   }
 
@@ -145,5 +166,10 @@ export function buildStrategy(doc: TablesDoc, factId: FactId): BuiltStrategy {
 
   const chosen = solid[0] ?? [...candidates].sort(byPriority)[0]!;
   const { steps, closing } = chosen.template.build(chosen.n);
-  return { strategyId: chosen.template.id, steps, closing };
+  return {
+    strategyId: chosen.template.id,
+    steps,
+    closing,
+    display: { a: chosen.template.appliesTo, b: chosen.n },
+  };
 }
