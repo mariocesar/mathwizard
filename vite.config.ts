@@ -18,10 +18,11 @@ export default defineConfig({
         short_name: 'Matemago',
         description: 'Conviértete en un mago de las mates practicando.',
         lang: 'es',
+        id: BASE,
         start_url: BASE,
         scope: BASE,
+        // standalone a secas: fullscreen ocultaría el reloj y la batería.
         display: 'standalone',
-        display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
         theme_color: '#faf5ec',
         background_color: '#faf5ec',
@@ -37,7 +38,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,mp3}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         navigateFallback: `${BASE}index.html`,
       },
     }),

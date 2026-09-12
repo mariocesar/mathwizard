@@ -19,6 +19,11 @@ alta, sin zumbidos, sin rojo, sin caras tristes.
 Escanea el código con la cámara, abre el enlace en Safari y usa
 **Compartir → Añadir a pantalla de inicio** para instalarla como app.
 
+> **Instala antes de practicar.** La app instalada tiene su propio
+> almacenamiento, separado de Safari: el progreso hecho en Safari no se
+> traslada. A cambio, el progreso de la app instalada no caduca (está
+> exento de la limpieza de 7 días de Safari).
+
 ## Desarrollo
 
 ```sh
@@ -122,3 +127,9 @@ Nunca, en ninguna parte de la app:
 - [ ] Cerrar y relanzar: el progreso sigue (Leitner persistido).
 - [ ] Legibilidad de dígitos con Vito: `6 8 9 0` a tamaño héroe (si duda,
       cambiar `--font-display` a Baloo 2 — es un token).
+- [ ] iPhone: el interruptor de silencio apaga voz y sonidos (es el sistema,
+      no un bug) — probar el audio con el timbre activado.
+- [ ] iPhone en «Tu cielo»: ¿se lee el reloj de la barra de estado sobre el
+      fondo nocturno? Si no, cambiar `theme-color` por escena desde el router.
+- [ ] iPhone en horizontal: iOS ignora `orientation: portrait` — comprobar
+      que el NumPad sigue usable con el teléfono girado.
