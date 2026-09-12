@@ -149,8 +149,9 @@
     <p>
       El mapa de estrellas es la tabla de Pitágoras. Que 7×8 y 8×7 se enciendan a la vez no es un
       adorno: es la conmutatividad hecha visible — la simetría convierte 100 casillas en 55 hechos.
-      La diagonal son los cuadrados. Y cada estrella se gana respondiendo en la app: nada viene
-      encendido de fábrica.
+      La diagonal son los cuadrados. Cada estrella se gana respondiendo en la app — nada viene
+      encendido de fábrica — y brilla más con cada acierto hasta el oro pleno; una estrella ganada
+      puede atenuarse si el hecho se oxida, pero nunca vuelve a negro.
     </p>
   </section>
 

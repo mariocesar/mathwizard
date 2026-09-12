@@ -65,9 +65,9 @@
       <div class="header">{row}</div>
     {/if}
     {#each rows as col (col)}
-      {@const cell = matrix.cells[row - 1]![col - 1]!}
+      {@const level = matrix.cells[row - 1]![col - 1]!}
       <button
-        class="cell {cell}"
+        class="cell l{level}"
         class:diagonal={row === col}
         class:mirror={isMirrorOfSelected(row, col)}
         aria-label={`${row} por ${col}`}
@@ -75,7 +75,9 @@
         use:kindleAction={{ row, col, active: isKindle(row, col) }}
         onclick={() => select(row, col)}
       >
-        {#if cell === 'gold' && size === 'full'}✦{/if}
+        <!-- La estrellita aparece desde el primer acierto (a Vito le gustan)
+             y brilla más con cada caja: el dominio se VE acumular. -->
+        {#if level >= 1 && size === 'full'}✦{/if}
       </button>
     {/each}
   {/each}
@@ -131,13 +133,21 @@
     pointer-events: none;
   }
 
-  .cell.gold {
-    background: var(--star);
-    box-shadow: 0 0 8px rgb(245 200 107 / 0.45);
+  /* Rampa de oro: cada caja ganada sube el brillo hasta el oro pleno. */
+  .cell.l1 {
+    background: color-mix(in srgb, var(--night-raised) 72%, var(--star));
+    color: color-mix(in srgb, var(--star) 55%, transparent);
   }
 
-  .cell.plata {
-    background: color-mix(in srgb, var(--night-raised) 40%, var(--plata));
+  .cell.l2 {
+    background: color-mix(in srgb, var(--night-raised) 38%, var(--star));
+    color: color-mix(in srgb, var(--night) 70%, transparent);
+  }
+
+  .cell.l3 {
+    background: var(--star);
+    color: var(--night);
+    box-shadow: 0 0 8px rgb(245 200 107 / 0.45);
   }
 
   .cell.diagonal {

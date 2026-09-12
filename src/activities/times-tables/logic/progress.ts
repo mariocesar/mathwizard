@@ -1,51 +1,57 @@
 import { canonicalId } from './facts';
-import type { TablesDoc } from './types';
+import type { FactState, TablesDoc } from './types';
 
 /**
  * Matriz de dominio 10×10 para «Tu cielo». Las celdas espejo (7×8 y 8×7)
  * salen del MISMO estado canónico: el marcador enseña la conmutatividad.
- * oro = caja 5 (dominado) · plata = cajas 3–4 (en camino) · apagado = 1–2.
+ *
+ * El brillo ACUMULA (idea de Mamá): cada acierto sube la caja y la estrella
+ * brilla más, hasta el oro pleno en la caja 5. Y una estrella ganada nunca
+ * vuelve a negro — si el hecho cae de caja, baja a brillo mínimo, pero
+ * apagarla del todo sería un castigo en la pantalla del premio.
  *
  * Una estrella solo se enciende si el niño la GANÓ en la app (al menos un
  * acierto registrado). Feedback real de Vito al ver 64 estrellas de fábrica:
- * «¿alguien hizo eso por mí?» — el cielo empieza oscuro y se enciende con
- * victorias reales, o la moneda entera pierde el valor.
+ * «¿alguien hizo eso por mí?» — el cielo empieza oscuro.
  */
-export type CellState = 'gold' | 'plata' | 'unlit';
+
+/** 0 = apagada · 1 = tenue · 2 = brillando · 3 = oro pleno (dominada). */
+export type CellLevel = 0 | 1 | 2 | 3;
 
 export interface ProgressMatrix {
   /** cells[fila-1][columna-1], filas y columnas 1..10. */
-  cells: CellState[][];
+  cells: CellLevel[][];
+  /** Estrellas a oro pleno (caja 5): las que cuentan como «tuyas». */
   goldCells: number;
-  plataCells: number;
+  /** Celdas con algún brillo (nivel ≥ 1). */
+  earnedCells: number;
   totalCells: 100;
 }
 
-function cellStateFor(doc: TablesDoc, a: number, b: number): CellState {
-  const state = doc.facts[canonicalId(a, b)];
-  if (!state) return 'unlit';
+function levelFor(state: FactState | undefined): CellLevel {
+  if (!state) return 0;
   const earned = state.history.some((attempt) => attempt.correct);
-  if (!earned) return 'unlit';
-  if (state.box === 5) return 'gold';
-  if (state.box >= 3) return 'plata';
-  return 'unlit';
+  if (!earned) return 0;
+  if (state.box === 5) return 3;
+  if (state.box === 4) return 2;
+  return 1;
 }
 
 export function progressMatrix(doc: TablesDoc): ProgressMatrix {
-  const cells: CellState[][] = [];
+  const cells: CellLevel[][] = [];
   let goldCells = 0;
-  let plataCells = 0;
+  let earnedCells = 0;
   for (let row = 1; row <= 10; row++) {
-    const cols: CellState[] = [];
+    const cols: CellLevel[] = [];
     for (let col = 1; col <= 10; col++) {
-      const cell = cellStateFor(doc, row, col);
-      cols.push(cell);
-      if (cell === 'gold') goldCells++;
-      if (cell === 'plata') plataCells++;
+      const level = levelFor(doc.facts[canonicalId(row, col)]);
+      cols.push(level);
+      if (level === 3) goldCells++;
+      if (level >= 1) earnedCells++;
     }
     cells.push(cols);
   }
-  return { cells, goldCells, plataCells, totalCells: 100 };
+  return { cells, goldCells, earnedCells, totalCells: 100 };
 }
 
 export interface ProgressSummary {
