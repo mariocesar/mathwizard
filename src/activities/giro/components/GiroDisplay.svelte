@@ -59,13 +59,21 @@
     font-weight: 500;
   }
 
+  /* El hueco ES la actividad: caja hundida bien visible, no un caret tímido. */
   .answer {
-    min-width: 1.2ch;
+    min-width: 1.4ch;
     color: var(--tinta-viva);
+    background: var(--paper-sunken);
+    border-radius: var(--radius-cell);
+    padding-inline: 0.12em;
+    box-shadow: inset 0 2px 0 rgb(46 42 82 / 0.08);
+    text-align: center;
   }
 
   .answer.reveal {
     color: var(--ink);
+    background: transparent;
+    box-shadow: none;
     animation: reveal-in 200ms var(--ease-out);
   }
 
