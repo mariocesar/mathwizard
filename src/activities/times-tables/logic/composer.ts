@@ -1,5 +1,5 @@
 import type { Rng } from '../../../lib/domain/rng';
-import { getFact } from './facts';
+import { getFact } from '../../../lib/domain/facts';
 import {
   STALLED_LINE,
   buildSessionSummary,

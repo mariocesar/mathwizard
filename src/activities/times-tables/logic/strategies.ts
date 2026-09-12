@@ -1,4 +1,4 @@
-import { canonicalId, getFact } from './facts';
+import { canonicalId, getFact } from '../../../lib/domain/facts';
 import type { FactId, FactState, StrategyId, StrategyStep, TablesDoc } from './types';
 
 /**

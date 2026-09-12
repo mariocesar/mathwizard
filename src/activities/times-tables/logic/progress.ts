@@ -1,4 +1,4 @@
-import { canonicalId } from './facts';
+import { canonicalId } from '../../../lib/domain/facts';
 import type { FactState, TablesDoc } from './types';
 
 /**

@@ -2,7 +2,7 @@
   import { router } from '../app/router.svelte';
   import { progressMatrix } from '../activities/times-tables/logic/progress';
   import { TABLES_SPEC, TIMES_TABLES_ID } from '../activities/times-tables/logic/state';
-  import { parseFactId } from '../activities/times-tables/logic/facts';
+  import { parseFactId } from '../lib/domain/facts';
   import { loadSlice } from '../lib/storage/migrate';
   import { activityKey } from '../lib/storage/storage';
   import PythagorasGrid from '../lib/ui/PythagorasGrid.svelte';

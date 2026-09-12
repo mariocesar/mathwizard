@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTS } from './facts';
+import { FACTS } from '../../../lib/domain/facts';
 import { initDoc } from './scheduler';
 import { buildStrategy } from './strategies';
 

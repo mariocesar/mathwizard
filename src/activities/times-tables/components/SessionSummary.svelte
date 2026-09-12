@@ -3,7 +3,7 @@
   import { hatTip } from '../../../lib/ui/motion';
   import { playWarmNote } from '../../../lib/ui/sound';
   import { settings } from '../../../app/settings.svelte';
-  import { parseFactId } from '../logic/facts';
+  import { parseFactId } from '../../../lib/domain/facts';
   import type { FactId, TablesDoc } from '../logic/types';
 
   let {

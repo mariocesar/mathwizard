@@ -1,4 +1,22 @@
-import type { Fact, FactId, FactKind } from './types';
+/**
+ * El universo de hechos de multiplicar (tablas 1–10) es dominio compartido:
+ * lo usan «Las tablas» y «El giro», y cualquier actividad futura de tablas.
+ */
+
+/** Id canónico de un hecho: `a×b` con a ≤ b. 7×8 y 8×7 son UN hecho. */
+export type FactId = `${number}x${number}`;
+
+export type FactKind = 'target' | 'square' | 'seeded';
+// target = los 15 hechos duros (ambos operandos en {3,4,6,7,8,9}, a ≠ b)
+// square = 3×3, 4×4, 6×6, 7×7, 8×8, 9×9 (objetivo, marcados en la diagonal)
+// seeded = todo lo que toca {1, 2, 5, 10} → lo trae sabido de 2.º
+
+export interface Fact {
+  id: FactId;
+  a: number; // a ≤ b, ambos 1..10
+  b: number;
+  kind: FactKind;
+}
 
 /** Operandos de las tablas «nuevas» de 3.º — definen objetivo vs. sembrado. */
 const HARD_OPERANDS = new Set([3, 4, 6, 7, 8, 9]);

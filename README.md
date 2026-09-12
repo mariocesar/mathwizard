@@ -70,7 +70,10 @@ Reglas que sostienen el diseño:
 2. Añade **una línea** a `src/activities/registry.ts`.
 
 Nada más cambia: ruta, tarjeta en la torre, slice de storage y servicios
-salen del registro.
+salen del registro. La prueba viva es «El giro» (`src/activities/giro/`) —
+el factor que falta (`5 × _ = 20`), idea del propio Vito y puente a la
+división: retos sin reloj sobre los hechos que ya van solos (caja ≥ 3 en
+Las tablas), con racha récord persistida.
 
 ## Anti-goals (revisa cada cambio contra esta lista)
 

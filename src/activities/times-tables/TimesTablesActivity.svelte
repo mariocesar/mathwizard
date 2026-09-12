@@ -131,6 +131,11 @@
   const pendingCount = $derived(
     cs.queue.length + cs.winddownIds.length + (cs.current && cs.status !== 'summary' ? 1 : 0),
   );
+  const dots = $derived(
+    cs.results.map((r) =>
+      r.correct && r.fast === true ? 'gold' : r.correct ? 'plata' : 'ink',
+    ) as ('gold' | 'plata' | 'ink')[],
+  );
   const isStrategy = $derived(cs.current?.kind === 'strategy');
   const revealed = $derived(
     cs.status === 'feedback' && cs.feedback?.type === 'wrong' && cs.current
@@ -150,7 +155,7 @@
       {#if isStrategy}
         <span class="mode-title">Pensemos juntos</span>
       {:else}
-        <SessionDots results={cs.results} pending={pendingCount} />
+        <SessionDots {dots} pending={pendingCount} />
       {/if}
       <span class="spacer"></span>
     </header>

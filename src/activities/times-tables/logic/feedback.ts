@@ -1,5 +1,5 @@
-import { parseFactId, product } from './facts';
-import { hechoEnPalabras } from './numeros';
+import { parseFactId, product } from '../../../lib/domain/facts';
+import { hechoEnPalabras } from '../../../lib/domain/numeros';
 import type { FactId, ItemResult, SessionResult } from './types';
 
 /**

@@ -1,23 +1,17 @@
 <script lang="ts">
-  import type { ItemResult } from '../../activities/times-tables/logic/types';
-
   /**
-   * El ÚNICO indicador de estado en recuperación. Oro = rápida y tuya;
+   * El ÚNICO indicador de estado en práctica. Oro = rápida y tuya;
    * plata = correcta (sigue siendo estrella); tinta = anotada, aún sin
    * estrella. Nunca hay estado de derrota.
    */
-  let { results, pending }: { results: ItemResult[]; pending: number } = $props();
+  export type DotKind = 'gold' | 'plata' | 'ink';
 
-  function dotClass(r: ItemResult): string {
-    if (r.correct && r.fast === true) return 'gold';
-    if (r.correct) return 'plata';
-    return 'ink';
-  }
+  let { dots, pending }: { dots: DotKind[]; pending: number } = $props();
 </script>
 
 <div class="dots" aria-hidden="true">
-  {#each results as r, i (i)}
-    <span class="dot {dotClass(r)}"></span>
+  {#each dots as kind, i (i)}
+    <span class="dot {kind}"></span>
   {/each}
   <!-- Todos los puntos a la vista: la meta se ve entera («¿cuándo acaba?»). -->
   {#if pending > 0}

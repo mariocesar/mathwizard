@@ -1,6 +1,9 @@
 import type { Rng } from '../../../lib/domain/rng';
-import { FACTS, getFact, shareOperand } from './facts';
+import { FACTS, getFact, shareOperand } from '../../../lib/domain/facts';
+import { interleave } from '../../../lib/domain/interleave';
 import type { Attempt, Box, FactId, FactState, Phase, ShownAs, TablesDoc } from './types';
+
+export { interleave };
 
 /**
  * Espaciado en SESIONES COMPLETADAS, no en días de calendario: el uso de un
@@ -281,20 +284,4 @@ function correctStreak(state: FactState): number {
     streak++;
   }
   return streak;
-}
-
-/**
- * Construcción codiciosa: en cada paso toma el primer candidato del pool que
- * no choca con el último colocado; si todos chocan, el conflicto es
- * inevitable con este pool y se toma el primero.
- */
-export function interleave<T>(items: T[], conflicts: (a: T, b: T) => boolean): T[] {
-  const pool = [...items];
-  const out: T[] = [];
-  while (pool.length > 0) {
-    const last = out.at(-1);
-    const idx = last === undefined ? 0 : pool.findIndex((c) => !conflicts(last, c));
-    out.push(pool.splice(idx === -1 ? 0 : idx, 1)[0]!);
-  }
-  return out;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createRng } from '../../../lib/domain/rng';
-import { getFact, shareOperand } from './facts';
+import { getFact, shareOperand } from '../../../lib/domain/facts';
 import {
   FULL_SESSION,
   INTERVALS,
