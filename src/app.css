@@ -52,6 +52,11 @@
   --radius-cell: 6px;
   --radius-pill: 999px;
 
+  /* Botones de icono (cerrar, ajustes): más grandes que el mínimo de 44px
+     porque los dedos pequeños necesitan más margen, no menos. */
+  --tap-icon: 56px;
+  --text-icon: 1.75rem;
+
   /* Tipografía de imprenta, no blur de SaaS: borde inferior duro teñido de tinta */
   --edge-key: 0 3px 0 rgb(46 42 82 / 0.14);
   --edge-key-down: 0 1px 0 rgb(46 42 82 / 0.14);

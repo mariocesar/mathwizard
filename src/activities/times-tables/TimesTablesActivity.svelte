@@ -206,18 +206,18 @@
 
   header {
     display: grid;
-    grid-template-columns: 44px 1fr 44px;
+    grid-template-columns: var(--tap-icon) 1fr var(--tap-icon);
     align-items: center;
-    min-height: 44px;
+    min-height: var(--tap-icon);
   }
 
   .close {
-    width: 44px;
-    height: 44px;
+    width: var(--tap-icon);
+    height: var(--tap-icon);
     display: grid;
     place-items: center;
     color: var(--ink-soft);
-    font-size: 1.3rem;
+    font-size: var(--text-icon);
     border-radius: var(--radius-pill);
   }
 

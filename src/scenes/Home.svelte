@@ -78,11 +78,11 @@
   }
 
   .gear {
-    width: 44px;
-    height: 44px;
+    width: var(--tap-icon);
+    height: var(--tap-icon);
     display: grid;
     place-items: center;
-    font-size: 1.4rem;
+    font-size: var(--text-icon);
     color: var(--ink-soft);
     border-radius: var(--radius-pill);
   }
