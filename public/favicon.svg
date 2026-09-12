@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Página de vitela -->
+  <rect width="512" height="512" rx="115" fill="#faf5ec"/>
+  <!-- Sombrero de mago, tinta índigo -->
+  <g fill="#2e2a52">
+    <path d="M262 98 C 300 190 330 278 352 356 L 160 356 C 196 262 228 178 262 98 Z"
+          stroke="#2e2a52" stroke-width="18" stroke-linejoin="round"/>
+    <ellipse cx="256" cy="368" rx="150" ry="26"/>
+  </g>
+  <!-- Banda dorada -->
+  <path d="M180 306 L 332 306 L 344 344 L 168 344 Z" fill="#e3a83b"/>
+  <!-- Destello de cuatro puntas -->
+  <path d="M382 118 L 394 152 L 428 164 L 394 176 L 382 210 L 370 176 L 336 164 L 370 152 Z"
+        fill="#e3a83b"/>
+  <!-- Estrella pequeña -->
+  <circle cx="128" cy="150" r="10" fill="#f5c86b"/>
+</svg>
