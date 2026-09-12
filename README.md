@@ -1,4 +1,4 @@
-# MathWizard
+# Matemago (Math Wizard)
 
 Conviértete en un mago de las mates practicando. Una PWA instalable, en español,
 para móvil primero — servida desde GitHub Pages:

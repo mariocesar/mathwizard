@@ -14,8 +14,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'MathWizard',
-        short_name: 'MathWizard',
+        name: 'Matemago',
+        short_name: 'Matemago',
         description: 'Conviértete en un mago de las mates practicando.',
         lang: 'es',
         start_url: BASE,
