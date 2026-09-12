@@ -77,15 +77,10 @@
     animation: reveal-in 200ms var(--ease-out);
   }
 
+  /* Guía estática: durante la práctica nada se mueve si el niño no lo causó. */
   .caret {
-    color: var(--ink-faint);
-    animation: blink 1.2s step-end infinite;
-  }
-
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
+    color: var(--ink-soft);
+    opacity: 0.6;
   }
 
   @keyframes reveal-in {

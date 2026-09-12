@@ -88,8 +88,10 @@ Nunca, en ninguna parte de la app:
 
 1. Rojo, flash, zumbido, sacudida o cara triste en un fallo — el fallo es
    tinta serena mostrando el hecho correcto, en silencio (habla la voz).
-2. Celebración de más de 300 ms — si la fiesta dura más que la pregunta,
-   está robando práctica.
+2. Celebración de más de 300 ms durante la práctica — si la fiesta dura más
+   que la pregunta, está robando práctica. (Única excepción sancionada: el
+   saludo del sombrero al cerrar sesión, un solo gesto ≤800 ms, cuando ya no
+   queda práctica que robar.)
 3. Temporizador visible, cuenta atrás o barra que encoge mientras responde —
    la velocidad aparece después, como oro vs. plata, y la plata sigue siendo
    estrella.

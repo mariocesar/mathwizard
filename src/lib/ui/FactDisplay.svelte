@@ -26,7 +26,7 @@
   {#if revealed !== null}
     <span class="answer reveal">{revealed}</span>
   {:else}
-    <span class="answer">{input}<span class="caret" class:empty={input.length === 0}>_</span></span>
+    <span class="answer">{input}<span class="caret">_</span></span>
   {/if}
 </p>
 
@@ -61,19 +61,10 @@
     animation: reveal-in 200ms var(--ease-out);
   }
 
+  /* Guía estática: durante la práctica nada se mueve si el niño no lo causó. */
   .caret {
-    color: var(--ink-faint);
-    animation: blink 1.2s step-end infinite;
-  }
-
-  .caret.empty {
-    color: var(--ink-faint);
-  }
-
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
+    color: var(--ink-soft);
+    opacity: 0.6;
   }
 
   @keyframes reveal-in {

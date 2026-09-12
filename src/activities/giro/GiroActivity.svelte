@@ -171,7 +171,7 @@
     height: 44px;
     display: grid;
     place-items: center;
-    color: var(--ink-faint);
+    color: var(--ink-soft);
     font-size: 1.3rem;
     border-radius: var(--radius-pill);
   }

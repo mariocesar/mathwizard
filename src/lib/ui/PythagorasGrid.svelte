@@ -33,6 +33,37 @@
     onSelect?.(row, col);
   }
 
+  /**
+   * Las celdas son pequeñas para un dedo de niño, así que el objetivo táctil
+   * es la carta entera: cualquier toque selecciona la celda más cercana.
+   * El teclado sigue entrando por los botones de celda (Tab + Enter).
+   */
+  function onPointer(event: PointerEvent) {
+    if (size !== 'full') return;
+    const chart = event.currentTarget as HTMLElement;
+    let nearest: HTMLElement | null = null;
+    let best = Infinity;
+    for (const cell of chart.querySelectorAll<HTMLElement>('.cell')) {
+      const rect = cell.getBoundingClientRect();
+      const dx = event.clientX - (rect.left + rect.width / 2);
+      const dy = event.clientY - (rect.top + rect.height / 2);
+      const d = dx * dx + dy * dy;
+      if (d < best) {
+        best = d;
+        nearest = cell;
+      }
+    }
+    if (nearest) select(Number(nearest.dataset.row), Number(nearest.dataset.col));
+  }
+
+  /** Alternativa textual al color: el nivel va en el nombre accesible. */
+  const LEVEL_LABEL = [
+    'sin estrella aún',
+    'estrella tenue',
+    'estrella brillante',
+    'estrella de oro',
+  ];
+
   function isMirrorOfSelected(row: number, col: number): boolean {
     if (!selected) return false;
     const [r, c] = selected;
@@ -53,7 +84,9 @@
   const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 </script>
 
-<div class="chart" class:mini={size === 'mini'}>
+<!-- El teclado navega por los botones de celda; el puntero usa la carta entera. -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="chart" class:mini={size === 'mini'} onpointerdown={onPointer}>
   {#if size === 'full'}
     <div class="corner"></div>
     {#each rows as col (col)}
@@ -66,19 +99,26 @@
     {/if}
     {#each rows as col (col)}
       {@const level = matrix.cells[row - 1]![col - 1]!}
-      <button
-        class="cell l{level}"
-        class:diagonal={row === col}
-        class:mirror={isMirrorOfSelected(row, col)}
-        aria-label={`${row} por ${col}`}
-        tabindex={size === 'full' ? 0 : -1}
-        use:kindleAction={{ row, col, active: isKindle(row, col) }}
-        onclick={() => select(row, col)}
-      >
-        <!-- La estrellita aparece desde el primer acierto (a Vito le gustan)
-             y brilla más con cada caja: el dominio se VE acumular. -->
-        {#if level >= 1 && size === 'full'}✦{/if}
-      </button>
+      {#if size === 'full'}
+        <button
+          class="cell l{level}"
+          class:diagonal={row === col}
+          class:mirror={isMirrorOfSelected(row, col)}
+          aria-label={`${row} por ${col}, ${LEVEL_LABEL[level]}`}
+          data-row={row}
+          data-col={col}
+          use:kindleAction={{ row, col, active: isKindle(row, col) }}
+          onclick={() => select(row, col)}
+        >
+          <!-- La estrellita aparece desde el primer acierto (a Vito le gustan)
+               y brilla más con cada caja: el dominio se VE acumular. -->
+          {#if level >= 1}✦{/if}
+        </button>
+      {:else}
+        <!-- La mini es un resumen visual, no un control: nada interactivo
+             dentro del botón de la franja de Home. -->
+        <span class="cell l{level}" class:diagonal={row === col}></span>
+      {/if}
     {/each}
   {/each}
 </div>
@@ -126,11 +166,12 @@
     color: var(--night);
     line-height: 1;
     padding: 0;
+    /* El toque lo captura la carta (celda más cercana); Tab + Enter siguen aquí. */
+    pointer-events: none;
   }
 
   .mini .cell {
     border-radius: 2px;
-    pointer-events: none;
   }
 
   /* Rampa de oro: cada caja ganada sube el brillo hasta el oro pleno. */

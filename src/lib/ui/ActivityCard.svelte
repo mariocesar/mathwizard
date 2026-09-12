@@ -3,12 +3,10 @@
 
   let {
     title,
-    placeholder = false,
     onOpen,
     icon,
   }: {
     title: string;
-    placeholder?: boolean;
     onOpen?: () => void;
     icon?: Component;
   } = $props();
@@ -16,19 +14,12 @@
   const Icon = $derived(icon);
 </script>
 
-{#if placeholder}
-  <div class="card placeholder" aria-hidden="true">
-    <span class="glyph">✦</span>
-    <span class="title">Muy pronto</span>
-  </div>
-{:else}
-  <button class="card" onclick={onOpen}>
-    <span class="glyph">
-      {#if Icon}<Icon />{:else}×{/if}
-    </span>
-    <span class="title">{title}</span>
-  </button>
-{/if}
+<button class="card" onclick={onOpen}>
+  <span class="glyph">
+    {#if Icon}<Icon />{:else}×{/if}
+  </span>
+  <span class="title">{title}</span>
+</button>
 
 <style>
   .card {
@@ -72,17 +63,5 @@
     font-weight: 500;
     font-size: var(--text-body);
     color: var(--ink);
-  }
-
-  .placeholder {
-    background: transparent;
-    box-shadow: none;
-    border: 2px dashed var(--ink-faint);
-    color: var(--ink-faint);
-  }
-
-  .placeholder .glyph,
-  .placeholder .title {
-    color: var(--ink-faint);
   }
 </style>

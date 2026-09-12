@@ -216,7 +216,7 @@
     height: 44px;
     display: grid;
     place-items: center;
-    color: var(--ink-faint);
+    color: var(--ink-soft);
     font-size: 1.3rem;
     border-radius: var(--radius-pill);
   }
@@ -264,14 +264,9 @@
     margin-left: 0.4ch;
   }
 
+  /* Guía estática: durante la práctica nada se mueve si el niño no lo causó. */
   .caret {
-    color: var(--ink-faint);
-    animation: blink 1.2s step-end infinite;
-  }
-
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
+    color: var(--ink-soft);
+    opacity: 0.6;
   }
 </style>
