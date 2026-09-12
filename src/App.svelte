@@ -7,6 +7,7 @@
   import Home from './scenes/Home.svelte';
   import ActivityHost from './scenes/ActivityHost.svelte';
   import Cielo from './scenes/Cielo.svelte';
+  import Padres from './scenes/Padres.svelte';
 
   let { services }: { services: Services } = $props();
   // Los servicios se crean una vez en main.ts y no cambian.
@@ -29,6 +30,8 @@
         <SceneShell><Home /></SceneShell>
       {:else if route.scene === 'activity'}
         <SceneShell><ActivityHost id={route.id} /></SceneShell>
+      {:else if route.scene === 'padres'}
+        <SceneShell><Padres /></SceneShell>
       {:else}
         <SceneShell scene="cielo"><Cielo /></SceneShell>
       {/if}

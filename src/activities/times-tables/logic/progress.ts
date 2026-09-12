@@ -5,6 +5,11 @@ import type { TablesDoc } from './types';
  * Matriz de dominio 10×10 para «Tu cielo». Las celdas espejo (7×8 y 8×7)
  * salen del MISMO estado canónico: el marcador enseña la conmutatividad.
  * oro = caja 5 (dominado) · plata = cajas 3–4 (en camino) · apagado = 1–2.
+ *
+ * Una estrella solo se enciende si el niño la GANÓ en la app (al menos un
+ * acierto registrado). Feedback real de Vito al ver 64 estrellas de fábrica:
+ * «¿alguien hizo eso por mí?» — el cielo empieza oscuro y se enciende con
+ * victorias reales, o la moneda entera pierde el valor.
  */
 export type CellState = 'gold' | 'plata' | 'unlit';
 
@@ -19,6 +24,8 @@ export interface ProgressMatrix {
 function cellStateFor(doc: TablesDoc, a: number, b: number): CellState {
   const state = doc.facts[canonicalId(a, b)];
   if (!state) return 'unlit';
+  const earned = state.history.some((attempt) => attempt.correct);
+  if (!earned) return 'unlit';
   if (state.box === 5) return 'gold';
   if (state.box >= 3) return 'plata';
   return 'unlit';

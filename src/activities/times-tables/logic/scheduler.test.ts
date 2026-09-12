@@ -205,16 +205,75 @@ describe('applyOutcome — invariantes', () => {
   });
 });
 
+describe('applyOutcome — sonda de primer encuentro', () => {
+  // «Yo me sé la del 3, quiero practicar 8 y 9»: la app verifica, no supone.
+  const fresh = (): FactState => stateAt(1, 'strategy', { lastSeenSession: -1 });
+
+  it('rápida y bien ⇒ directo a caja 4 (casi sabido)', () => {
+    const next = applyOutcome(fresh(), { kind: 'retrieval', correct: true, fast: true }, 0, info);
+    expect(next.box).toBe(4);
+    expect(next.phase).toBe('retrieval');
+  });
+
+  it('bien pero lenta ⇒ caja 3 (a consolidar en recuperación)', () => {
+    const next = applyOutcome(fresh(), { kind: 'retrieval', correct: true, fast: false }, 0, info);
+    expect(next.box).toBe(3);
+    expect(next.phase).toBe('retrieval');
+  });
+
+  it('mal ⇒ caja 1 y estrategia, el camino normal', () => {
+    const next = applyOutcome(fresh(), { kind: 'retrieval', correct: false, fast: true }, 0, info);
+    expect(next.box).toBe(1);
+    expect(next.phase).toBe('strategy');
+  });
+
+  it('un sembrado (caja 5) en su primer encuentro NO es sonda: rápida se queda en 5', () => {
+    const seeded = stateAt(5, 'retrieval', { lastSeenSession: -1 });
+    const next = applyOutcome(seeded, { kind: 'retrieval', correct: true, fast: true }, 0, info);
+    expect(next.box).toBe(5);
+  });
+
+  it('un hecho YA VISTO no vuelve a sondear: rápida sube solo una caja', () => {
+    const seen = stateAt(1, 'strategy', { lastSeenSession: 2 });
+    const next = applyOutcome(seen, { kind: 'retrieval', correct: true, fast: true }, 3, info);
+    expect(next.box).toBe(2);
+  });
+});
+
 describe('planSession', () => {
-  it('respeta los topes: ≤2 objetivos nuevos y ≤6 ítems de estrategia', () => {
+  it('respeta los topes: ≤4 sondas nuevas y ≤3 ítems del bloque de pensar', () => {
     const doc = initDoc();
     const plan = planSession(doc, createRng(1), FULL_SESSION);
-    const newTargets = plan.main.filter(
+    const probes = plan.main.filter(
       (id) => doc.facts[id]!.lastSeenSession === -1 && getFact(id).kind !== 'seeded',
     );
-    const strategyItems = plan.main.filter((id) => doc.facts[id]!.phase === 'strategy');
-    expect(newTargets.length).toBeLessThanOrEqual(2);
-    expect(strategyItems.length).toBeLessThanOrEqual(6);
+    const opening = plan.main.filter(
+      (id) => doc.facts[id]!.phase === 'strategy' && doc.facts[id]!.lastSeenSession >= 0,
+    );
+    expect(probes.length).toBeLessThanOrEqual(4);
+    expect(opening.length).toBeLessThanOrEqual(3);
+  });
+
+  it('el bloque de pensar va SIEMPRE al principio de la sesión', () => {
+    // «¿Puedo hacerlo después?» / «me gusta que piense»: primero pensamos
+    // (poco), luego a toda velocidad — nunca interrumpe el flujo.
+    const doc = initDoc();
+    for (const id of ['3x4', '6x7', '7x8', '4x9'] as const) {
+      doc.facts[id]!.lastSeenSession = 0;
+      doc.facts[id]!.dueSession = 1;
+      doc.facts[id]!.box = 1;
+      doc.facts[id]!.phase = 'strategy';
+    }
+    doc.sessionCounter = 1;
+    const plan = planSession(doc, createRng(3), FULL_SESSION);
+    const isOpening = (id: (typeof plan.main)[number]) =>
+      doc.facts[id]!.phase === 'strategy' && doc.facts[id]!.lastSeenSession >= 0;
+    const lastOpening = plan.main.map(isOpening).lastIndexOf(true);
+    const firstFlow = plan.main.map(isOpening).indexOf(false);
+    if (lastOpening !== -1 && firstFlow !== -1) {
+      expect(lastOpening).toBeLessThan(firstFlow);
+    }
+    expect(plan.main.filter(isOpening).length).toBeLessThanOrEqual(3);
   });
 
   it('reserva 3 hechos seguros para el cierre, fuera del bloque principal', () => {

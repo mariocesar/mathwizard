@@ -37,7 +37,11 @@
 </div>
 
 <button class="sky-strip" onclick={() => router.cielo()}>
-  <span class="sky-label">✦ Tu cielo · {matrix.goldCells} estrellas</span>
+  <span class="sky-label">
+    ✦ Tu cielo · {matrix.goldCells === 0
+      ? 'enciende tu primera estrella'
+      : `${matrix.goldCells} estrellas`}
+  </span>
   <div class="mini-wrap" data-scene="cielo">
     <PythagorasGrid {matrix} size="mini" />
   </div>

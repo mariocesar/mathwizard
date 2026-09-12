@@ -35,6 +35,11 @@
 </header>
 
 <main>
+  {#if matrix.goldCells === 0 && matrix.plataCells === 0}
+    <p class="explainer">
+      Cada estrella es una multiplicación que ya es tuya. Practica y enciende las primeras.
+    </p>
+  {/if}
   <PythagorasGrid {matrix} size="full" {kindleCells} />
   <p class="legend">
     ✦ rápidas y tuyas · <span class="plata">■</span> casi · <span class="dim">■</span> aún por encender
@@ -78,6 +83,13 @@
     justify-content: center;
     gap: var(--space-4);
     padding-bottom: var(--space-5);
+  }
+
+  .explainer {
+    text-align: center;
+    color: var(--star-dim);
+    max-width: 30ch;
+    margin-inline: auto;
   }
 
   .legend {

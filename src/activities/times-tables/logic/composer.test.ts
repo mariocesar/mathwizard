@@ -178,6 +178,20 @@ describe('composer — re-encolado y recuperación', () => {
     expect(upcoming[reappearance]!.requeueOf).toBe(failedId);
   });
 
+  it('el re-encolado es recuperación rápida, no estrategia (acaba de oírlo)', () => {
+    const d = firstRetrievalDriver();
+    while (d.state.current && d.state.current.kind !== 'retrieval') {
+      d.completeItem();
+      d.finishFeedback();
+    }
+    const failedId = d.state.current!.factId;
+    d.answer({ correct: false });
+    d.finishFeedback();
+    const upcoming: SessionItem[] = [d.state.current!, ...d.state.queue];
+    const requeued = upcoming.find((i) => i.requeueOf === failedId)!;
+    expect(requeued.kind).toBe('retrieval');
+  });
+
   it('acertar el re-encolado lo registra como recuperado', () => {
     const d = firstRetrievalDriver();
     while (d.state.current && d.state.current.kind !== 'retrieval') {

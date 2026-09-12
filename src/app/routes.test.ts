@@ -16,11 +16,16 @@ describe('parseHash', () => {
     expect(parseHash('#/cielo')).toEqual({ scene: 'cielo' });
   });
 
+  it('#/padres abre la página para padres', () => {
+    expect(parseHash('#/padres')).toEqual({ scene: 'padres' });
+  });
+
   it('hashFor y parseHash son inversos', () => {
     const routes = [
       { scene: 'home' },
       { scene: 'activity', id: 'times-tables' },
       { scene: 'cielo' },
+      { scene: 'padres' },
     ] as const;
     for (const route of routes) {
       expect(parseHash(hashFor(route))).toEqual(route);

@@ -61,11 +61,22 @@ export type Outcome =
   | { kind: 'strategy'; correct: boolean }
   | { kind: 'retrieval'; correct: boolean; fast: boolean | null };
 
+/** ¿Es la primera vez que la app ve este hecho objetivo? → sonda. */
+export function isProbe(state: FactState, outcome: Outcome): boolean {
+  return outcome.kind === 'retrieval' && state.lastSeenSession === -1 && state.box === 1;
+}
+
 /**
  * LA función de transición. Invariante central: «mal o lento nunca sube».
  * Fallo en recuperación → caja 1 Y fase estrategia (integración Woodward).
  * Dos lentas-correctas seguidas → caja 2 + estrategia (lentitud persistente
  * = lo está calculando, no recuperando).
+ *
+ * SONDA (primer encuentro de un objetivo, feedback real de Vito: «yo me sé
+ * la del 3, quiero practicar 8 y 9»): la primera presentación es una
+ * pregunta de recuperación que VERIFICA lo que ya sabe en vez de suponer
+ * que no sabe nada. Rápida → caja 4; lenta → caja 3; mal → caja 1 y
+ * estrategia, como siempre.
  */
 export function applyOutcome(
   state: FactState,
@@ -84,6 +95,18 @@ export function applyOutcome(
       box = state.box < 3 ? ((state.box + 1) as Box) : state.box;
       slowStreak = 0;
     } else {
+      box = 1;
+      slowStreak = 0;
+    }
+  } else if (isProbe(state, outcome)) {
+    if (outcome.correct && outcome.fast === true) {
+      box = 4;
+      slowStreak = 0;
+    } else if (outcome.correct && outcome.fast === false) {
+      box = 3;
+      slowStreak = 0;
+    } else {
+      // Mal o medición inválida: entra por el camino normal, caja 1.
       box = 1;
       slowStreak = 0;
     }
@@ -142,9 +165,12 @@ export interface PlanOptions {
 }
 
 export const FULL_SESSION: PlanOptions = {
-  targetItems: 30,
-  maxNewTargets: 2,
-  maxStrategyItems: 6,
+  // 20 ítems + el trío del cierre ≈ 3–4 min: un final visible y cercano
+  // (feedback de Vito: «¿cuándo acaba?»). Las sondas son baratas → hasta 4
+  // hechos nuevos por sesión; el bloque de pensar se limita a 3.
+  targetItems: 20,
+  maxNewTargets: 4,
+  maxStrategyItems: 3,
 };
 
 export interface SessionPlan {
@@ -199,17 +225,19 @@ export function planSession(
         tiebreak.get(x.factId)! - tiebreak.get(y.factId)!,
     );
 
-  // 3. Topes: nuevos y estrategia.
+  // 3. Topes: sondas (hechos nuevos) y bloque de estrategia. Un hecho nuevo
+  //    se presenta como SONDA de recuperación (no consume el tope de pensar).
   const main: FactState[] = [];
   let newTargets = 0;
   let strategyCount = 0;
   for (const s of due) {
     const isNew = s.lastSeenSession === -1 && getFact(s.factId).kind !== 'seeded';
+    const isOpening = s.phase === 'strategy' && s.lastSeenSession >= 0;
     if (isNew && newTargets >= opts.maxNewTargets) continue;
-    if (s.phase === 'strategy' && strategyCount >= opts.maxStrategyItems) continue;
+    if (isOpening && strategyCount >= opts.maxStrategyItems) continue;
     main.push(s);
     if (isNew) newTargets++;
-    if (s.phase === 'strategy') strategyCount++;
+    if (isOpening) strategyCount++;
     if (main.length >= opts.targetItems) break;
   }
 
@@ -231,8 +259,17 @@ export function planSession(
     main.push(...backfill.slice(0, opts.targetItems - main.length));
   }
 
-  // 5. Entrelazado: barajar y reparar «sin operando compartido consecutivo».
-  const order = interleave(rng.shuffle(main.map((s) => s.factId)), shareOperand);
+  // 5. Orden: primero el bloque de «trucos» (estrategia ya vista, ≤3) y
+  //    después el flujo rápido (sondas + recuperación) — «primero pensamos,
+  //    luego a toda velocidad». Cada bloque entrelazado sin operandos
+  //    compartidos consecutivos.
+  const isOpening = (s: FactState) => s.phase === 'strategy' && s.lastSeenSession >= 0;
+  const opening = main.filter(isOpening).map((s) => s.factId);
+  const flow = main.filter((s) => !isOpening(s)).map((s) => s.factId);
+  const order = [
+    ...interleave(rng.shuffle(opening), shareOperand),
+    ...interleave(rng.shuffle(flow), shareOperand),
+  ];
 
   return { main: order, winddown };
 }

@@ -12,9 +12,10 @@ import { createHaptics, createSpeech, realClock, type Services } from './lib/ser
 import { armAudio } from './lib/ui/sound';
 
 const soundOn = () => settings.data.sound;
+const voiceOn = () => settings.data.voice;
 
 const services: Services = {
-  speech: createSpeech(soundOn),
+  speech: createSpeech(voiceOn),
   haptics: createHaptics(soundOn),
   clock: realClock,
 };

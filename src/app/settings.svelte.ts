@@ -1,16 +1,7 @@
 import { PersistedSlice } from '../lib/storage/persisted.svelte';
-import type { SliceSpec } from '../lib/storage/migrate';
 import { settingsKey } from '../lib/storage/storage';
+import { SETTINGS_SPEC, type Settings } from './settingsSpec';
 
-export interface Settings {
-  sound: boolean;
-  name: string;
-}
+export type { Settings };
 
-const spec: SliceSpec<Settings> = {
-  version: 1,
-  initial: () => ({ sound: true, name: 'Vito' }),
-  migrate: () => spec.initial(),
-};
-
-export const settings = new PersistedSlice<Settings>(localStorage, settingsKey(), spec);
+export const settings = new PersistedSlice<Settings>(localStorage, settingsKey(), SETTINGS_SPEC);

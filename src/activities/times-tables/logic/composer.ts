@@ -100,13 +100,25 @@ function randomShownAs(rng: Rng): ShownAs {
   return rng.next() < 0.5 ? 'ab' : 'ba';
 }
 
-function makeItem(doc: TablesDoc, factId: FactId, rng: Rng, isWinddown: boolean): SessionItem {
+function makeItem(
+  doc: TablesDoc,
+  factId: FactId,
+  rng: Rng,
+  isWinddown: boolean,
+  forceRetrieval = false,
+): SessionItem {
   const fact = getFact(factId);
   const shownAs = randomShownAs(rng);
   const a = shownAs === 'ab' ? fact.a : fact.b;
   const b = shownAs === 'ab' ? fact.b : fact.a;
   const state = doc.facts[factId]!;
-  if (!isWinddown && state.phase === 'strategy') {
+  // Estrategia solo para hechos YA VISTOS en fase estrategia. Un hecho nunca
+  // visto se presenta como SONDA de recuperación (verificar antes de enseñar),
+  // y una re-pregunta tras fallo es recuperación rápida (acaba de oírlo);
+  // su tratamiento de estrategia llega en la apertura de la sesión siguiente.
+  const wantsStrategy =
+    !isWinddown && !forceRetrieval && state.phase === 'strategy' && state.lastSeenSession >= 0;
+  if (wantsStrategy) {
     const strategy = buildStrategy(doc, factId);
     // La tarjeta muestra el hecho en la MISMA orientación que la derivación
     // («9 × 7» arriba si abajo se habla de 9 × 7) — nada de saltos de tema.
@@ -295,7 +307,7 @@ function onSubmitRetrieval(
     feedback = wrong(item.factId);
     effects.push({ type: 'speak', text: feedback.spoken! });
     if (!item.isWinddown) {
-      const requeued = makeItem(doc, item.factId, rng, false);
+      const requeued = makeItem(doc, item.factId, rng, false, true);
       const withTag = { ...requeued, requeueOf: item.factId } as SessionItem;
       const at = Math.min(REQUEUE_OFFSET, state.queue.length);
       queue = [...state.queue.slice(0, at), withTag, ...state.queue.slice(at)];
@@ -382,7 +394,7 @@ function onSubmitStrategy(
   } else {
     feedback = wrong(item.factId);
     effects.push({ type: 'speak', text: feedback.spoken! });
-    const requeued = makeItem(doc, item.factId, rng, false);
+    const requeued = makeItem(doc, item.factId, rng, false, true);
     const withTag = { ...requeued, requeueOf: item.factId } as SessionItem;
     const at = Math.min(REQUEUE_OFFSET, state.queue.length);
     queue = [...state.queue.slice(0, at), withTag, ...state.queue.slice(at)];

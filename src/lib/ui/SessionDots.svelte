@@ -19,9 +19,10 @@
   {#each results as r, i (i)}
     <span class="dot {dotClass(r)}"></span>
   {/each}
+  <!-- Todos los puntos a la vista: la meta se ve entera («¿cuándo acaba?»). -->
   {#if pending > 0}
     <span class="dot current"></span>
-    {#each Array(Math.max(0, Math.min(pending - 1, 12 - results.length))) as _, i (i)}
+    {#each Array(Math.max(0, pending - 1)) as _, i (i)}
       <span class="dot"></span>
     {/each}
   {/if}

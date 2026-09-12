@@ -28,6 +28,11 @@ class Router {
     location.hash = hashFor({ scene: 'cielo' });
   }
 
+  padres(): void {
+    this.depth++;
+    location.hash = hashFor({ scene: 'padres' });
+  }
+
   home(): void {
     if (this.depth > 0) {
       this.depth = 0;

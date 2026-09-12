@@ -1,5 +1,6 @@
 /** Rutas de la app. Hash routing: en GitHub Pages no hay 404 que hackear. */
-export type Route = { scene: 'home' } | { scene: 'activity'; id: string } | { scene: 'cielo' };
+export type Route =
+  { scene: 'home' } | { scene: 'activity'; id: string } | { scene: 'cielo' } | { scene: 'padres' };
 
 export function parseHash(hash: string): Route {
   const h = hash.replace(/^#/, '');
@@ -8,6 +9,7 @@ export function parseHash(hash: string): Route {
     if (id.length > 0) return { scene: 'activity', id };
   }
   if (h === '/cielo') return { scene: 'cielo' };
+  if (h === '/padres') return { scene: 'padres' };
   return { scene: 'home' };
 }
 
@@ -19,5 +21,7 @@ export function hashFor(route: Route): string {
       return `#/a/${route.id}`;
     case 'cielo':
       return '#/cielo';
+    case 'padres':
+      return '#/padres';
   }
 }

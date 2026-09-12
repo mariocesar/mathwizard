@@ -1,5 +1,6 @@
 <script lang="ts">
   import { activities } from '../activities/registry';
+  import { router } from '../app/router.svelte';
   import { settings } from '../app/settings.svelte';
   import { activityKey } from '../lib/storage/storage';
 
@@ -9,6 +10,10 @@
 
   function toggleSound() {
     settings.update((s) => ({ ...s, sound: !s.sound }));
+  }
+
+  function toggleVoice() {
+    settings.update((s) => ({ ...s, voice: !s.voice }));
   }
 
   function rename(event: Event) {
@@ -45,9 +50,24 @@
       </label>
 
       <label class="row">
+        <span>Voz (dice la respuesta al fallar)</span>
+        <input type="checkbox" checked={settings.data.voice} onchange={toggleVoice} />
+      </label>
+
+      <label class="row">
         <span>Nombre</span>
         <input class="name" type="text" value={settings.data.name} onchange={rename} />
       </label>
+
+      <button
+        class="link"
+        onclick={() => {
+          onClose();
+          router.padres();
+        }}
+      >
+        ¿Por qué se practica así? Guía para padres
+      </button>
 
       <button class="danger" onclick={resetProgress}>
         {confirmingReset ? '¿Seguro? Se pierde todo el progreso' : 'Borrar progreso'}
@@ -110,6 +130,14 @@
     text-align: right;
     background: var(--paper-raised);
     color: var(--ink);
+  }
+
+  .link {
+    color: var(--tinta-viva);
+    text-decoration: underline;
+    font-size: var(--text-note);
+    text-align: left;
+    min-height: 44px;
   }
 
   .danger {
