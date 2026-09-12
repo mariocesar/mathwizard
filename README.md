@@ -12,6 +12,13 @@ umbral de 6 s (el estándar de la MTC inglesa), y feedback asimétrico — la
 celebración dura ≤300 ms y en el fallo la app dice el hecho completo en voz
 alta, sin zumbidos, sin rojo, sin caras tristes.
 
+## Instalar en iPhone
+
+<img src="docs/install-qr.svg" alt="Código QR con la URL de Matemago" width="180" />
+
+Escanea el código con la cámara, abre el enlace en Safari y usa
+**Compartir → Añadir a pantalla de inicio** para instalarla como app.
+
 ## Desarrollo
 
 ```sh
